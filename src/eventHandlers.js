@@ -1,5 +1,5 @@
 import displayBoard from "./domHandler";
-import { createPlayer, players } from "./storage";
+import { createPlayers, players } from "./game";
 
 const modalWindow = document.querySelector(".start-modal");
 const modalForm = document.querySelector(".start-modal form");
@@ -9,12 +9,32 @@ function addModalFormListener() {
   modalForm.addEventListener("submit", (e) => {
     e.preventDefault();
     modalWindow.style.display = "none";
-    createPlayer(modalInput.value, "one", true);
+    createPlayers(modalInput.value);
     displayBoard();
+    addSquareListeners();
   });
 }
 
-export default function initListeners() {
-  // addModalButtonListner();
+function addSquareListeners() {
+  const squares = document.querySelectorAll("td");
+  squares.forEach((square) => {
+    square.addEventListener("click", (event) => {
+      if (square.textContent === "X" || square.textContent === "O") {
+        alert("Invalid Move");
+        return;
+      }
+      const player = square.parentElement.parentElement.dataset.player;
+      const [row, col] = [square.dataset.row, square.dataset.col];
+      const move = players[player].board.receiveAttackV2(row, col);
+      square.textContent = move;
+    });
+  });
+}
+
+export function startUpListeners() {
   addModalFormListener();
+}
+
+export function gameListeners() {
+  addSquareListeners();
 }

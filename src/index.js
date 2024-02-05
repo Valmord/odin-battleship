@@ -1,4 +1,4 @@
-import initListeners from "./eventHandlers";
+import { startUpListeners } from "./eventHandlers";
 import "./style.css";
 
-initListeners();
+startUpListeners();

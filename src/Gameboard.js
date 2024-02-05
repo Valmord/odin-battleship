@@ -3,8 +3,8 @@ import { COLUMNS, ROWS } from "./common";
 
 const getArrayIndicies = (coords) => {
   const [col, row] = [
-    COLUMNS.indexOf(coords[0].toUpperCase()),
-    parseInt(coords.slice(1)) - 1,
+    COLUMNS.indexOf(String(coords[0]).toUpperCase()),
+    parseInt(String(coords).slice(1)) - 1,
   ];
 
   if (col < 0 || col > 9 || row < 0 || row > 9)
@@ -31,28 +31,88 @@ export default class GameBoard {
     // console.log(this.board);
   }
 
+  randomlyPlaceShips() {
+    const ships = [5, 4, 4, 3, 3, 3, 2, 2, 2, 2];
+    ships.forEach((ship) => {
+      while (true) {
+        const direction = Math.ceil(Math.random() * 2);
+        const startCol = COLUMNS[Math.floor(Math.random() * 10)];
+        const startRow = ROWS[Math.floor(Math.random() * 10)];
+        let endCol = "";
+        let endRow = "";
+
+        if (direction === 1) {
+          // Horizontal
+          endRow = startRow;
+          endCol = COLUMNS[COLUMNS.indexOf(startCol) + ship - 1];
+        } else {
+          // Vertical
+          endCol = startCol;
+          endRow = ROWS.indexOf(startRow) + ship;
+        }
+
+        try {
+          this.placeShip(startCol + startRow, endCol + endRow);
+          console.log(
+            `Placing ship of length ${ship} at ${startCol}${startRow}:${endCol}${endRow}`
+          );
+          break;
+        } catch (err) {
+          // console.log(err);
+          console.log(
+            `Placing again ${startCol}${startRow}:${endCol}${endRow}`
+          );
+        }
+      }
+    });
+    console.dir(this.board);
+  }
+
   placeShip(coordStart, coordEnd) {
     const [startCol, startRow] = getArrayIndicies(coordStart);
     const [endCol, endRow] = getArrayIndicies(coordEnd);
 
     if (startCol !== endCol && startRow !== endRow)
       throw new Error("Ship cannot be diagonal");
-    if (startCol < endCol && startRow !== endRow)
-      throw new Error("Ship cannot be diagonal");
 
-    if (endCol - startCol > 0) {
+    if (startCol < endCol) {
       const ship = new Ship(endCol - startCol + 1);
+
+      for (let i = 0; i < ship.length; i++) {
+        if (this.board[startCol + i][startRow] !== "") {
+          throw new Error("Ship in spot!");
+        }
+      }
       for (let i = 0; i < ship.length; i++) {
         this.board[startCol + i][startRow] = ship;
       }
     } else {
       const ship = new Ship(endRow - startRow + 1);
+
+      for (let i = 0; i < ship.length; i++) {
+        if (this.board[startCol][startRow + i] !== "")
+          throw new Error("Ship in spot!");
+      }
       for (let i = 0; i < ship.length; i++) {
         this.board[startCol][startRow + i] = ship;
       }
     }
 
     this.ships += 1;
+  }
+
+  receiveAttackV2(row, col) {
+    const boardSquare = this.board[row][col];
+    if (boardSquare === "") {
+      this.board[row][col] = "O";
+      this.misses += 1;
+      return "O"; // true = valid movie
+    } else if (boardSquare !== "X" && boardSquare !== "O") {
+      boardSquare.hit();
+      if (boardSquare.isSunk()) this.ships -= 1;
+      this.board[row][col] = "X";
+      return "X";
+    }
   }
 
   receiveAttack(coords) {

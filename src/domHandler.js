@@ -1,8 +1,9 @@
 import { COLUMNS, ROWS } from "./common";
-import { players } from "./storage";
+import { players } from "./game";
 
-function createBoard() {
+function createBoard(player, shown) {
   const table = document.createElement("table");
+  table.dataset.player = player;
 
   // Create Table Header
   const headerRow = document.createElement("tr");
@@ -23,7 +24,10 @@ function createBoard() {
     row.appendChild(rowHeader);
     for (let j = 0; j < COLUMNS.length; j++) {
       const col = document.createElement("td");
-      col.textContent = COLUMNS[j] + ROWS[i];
+      if (shown && players[player].board.board[i][j]) col.textContent = "S";
+      else col.textContent = "";
+      col.dataset.col = j;
+      col.dataset.row = i;
       row.appendChild(col);
     }
     table.appendChild(row);
@@ -31,21 +35,21 @@ function createBoard() {
   return table;
 }
 
-function createBoardContainer(name = "test") {
+function createBoardContainer(player, show) {
   const playerBoard = document.createElement("div");
   playerBoard.classList.add("player-one-board");
-  playerBoard.appendChild(createBoard());
+  playerBoard.appendChild(createBoard(player, show));
 
   const tableOwner = document.createElement("h4");
-  tableOwner.textContent = `Player: ${name}`;
+  tableOwner.textContent = `Player: ${players[player].name}`;
   playerBoard.appendChild(tableOwner);
 
   return playerBoard;
 }
 
 export default function displayBoard() {
-  const player1 = createBoardContainer("Player1");
-  const player2 = createBoardContainer("Player2");
+  const player1 = createBoardContainer("one", true);
+  const player2 = createBoardContainer("two", true);
 
   const boardContainer = document.querySelector(".board-container");
   boardContainer.appendChild(player1);
