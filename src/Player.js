@@ -1,4 +1,4 @@
-const { default: GameBoard } = require("./Gameboard");
+import GameBoard from "./Gameboard";
 
 export default class Player {
   constructor(name = "Alan the AI", human = false) {

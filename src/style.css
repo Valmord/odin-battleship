@@ -18,6 +18,13 @@ body {
   background-color: var(--background-color);
 }
 
+body > h1 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  font-size: 3rem;
+}
+
 .start-modal {
   background-color: rgb(0, 0, 0, 0.4);
   height: 100vh;
@@ -58,5 +65,26 @@ body {
       width: 100%;
       padding: 5px;
     }
+  }
+}
+
+.board-container {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+table {
+  font-size: 1.6rem;
+  text-align: center;
+  border: gray solid 2px;
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 10px;
+
+  & td {
+    height: 2lh;
+    width: 2lh;
+    cursor: pointer;
   }
 }
