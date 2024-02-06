@@ -1,5 +1,5 @@
-import displayBoard from "./domHandler";
-import { createPlayers, players } from "./game";
+import { display } from "./domHandler";
+import { takeMove, createPlayers, players } from "./game";
 
 const modalWindow = document.querySelector(".start-modal");
 const modalForm = document.querySelector(".start-modal form");
@@ -10,24 +10,28 @@ function addModalFormListener() {
     e.preventDefault();
     modalWindow.style.display = "none";
     createPlayers(modalInput.value);
-    displayBoard();
-    addSquareListeners();
+    display.activePlayer();
+    display.board();
+    gameListeners();
   });
 }
 
 function addSquareListeners() {
   const squares = document.querySelectorAll("td");
   squares.forEach((square) => {
-    square.addEventListener("click", (event) => {
-      if (square.textContent === "X" || square.textContent === "O") {
-        alert("Invalid Move");
-        return;
-      }
-      const player = square.parentElement.parentElement.dataset.player;
-      const [row, col] = [square.dataset.row, square.dataset.col];
-      const move = players[player].board.receiveAttackV2(row, col);
-      square.textContent = move;
-    });
+    square.addEventListener(
+      "click",
+      (event) => {
+        const player = square.parentElement.parentElement.dataset.player;
+        console.log(players.current, player);
+
+        if (players.current === player) return; // Wrong player field
+        square.classList.add("clicked");
+        const [row, col] = [square.dataset.row, square.dataset.col];
+        square.textContent = takeMove(row, col, player);
+      },
+      { once: true }
+    );
   });
 }
 

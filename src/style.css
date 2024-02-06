@@ -26,6 +26,9 @@ body > h1 {
 }
 
 .start-modal {
+  position: absolute;
+  left: 0;
+  top: 0;
   background-color: rgb(0, 0, 0, 0.4);
   height: 100vh;
   width: 100vw;
@@ -86,4 +89,42 @@ table {
     cursor: pointer;
     border: 1px solid gray;
   }
+}
+
+h4 {
+  margin-top: 5px;
+  font-size: 1.6rem;
+}
+
+.clicked {
+  cursor: default;
+}
+
+.current-player {
+  margin-top: 20px;
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.player-one-board td {
+  background-color: lightpink;
+}
+
+.player-two-board td {
+  background-color: lightblue;
+}
+
+.inactive {
+  opacity: 0.5;
+  & td {
+    cursor: default;
+  }
+}
+
+.winner {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 3rem;
 }

@@ -37,7 +37,8 @@ function createBoard(player, shown) {
 
 function createBoardContainer(player, show) {
   const playerBoard = document.createElement("div");
-  playerBoard.classList.add("player-one-board");
+  playerBoard.classList.add(`player-${player}-board`);
+  if (player === "one") playerBoard.classList.add("inactive");
   playerBoard.appendChild(createBoard(player, show));
 
   const tableOwner = document.createElement("h4");
@@ -47,11 +48,25 @@ function createBoardContainer(player, show) {
   return playerBoard;
 }
 
-export default function displayBoard() {
-  const player1 = createBoardContainer("one", true);
-  const player2 = createBoardContainer("two", true);
+export const display = (() => {
+  const board = () => {
+    const player1 = createBoardContainer("one", true);
+    const player2 = createBoardContainer("two", false);
 
-  const boardContainer = document.querySelector(".board-container");
-  boardContainer.appendChild(player1);
-  boardContainer.appendChild(player2);
-}
+    const boardContainer = document.querySelector(".board-container");
+    boardContainer.appendChild(player1);
+    boardContainer.appendChild(player2);
+  };
+
+  const activePlayer = () => {
+    const playerElement = document.querySelector(".current-player");
+    playerElement.textContent = `${players[players.current].name}'s turn`;
+  };
+
+  const winner = () => {
+    const winnerElement = document.querySelector(".winner");
+    winnerElement.textContent = `${players[players.winner].name} WINS!!!!!`;
+  };
+
+  return { board, activePlayer, winner };
+})();
